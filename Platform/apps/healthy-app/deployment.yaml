@@ -1,0 +1,39 @@
+# healthy-app: aplicación de ejemplo que funciona correctamente.
+# Un Deployment es el manifiesto que le dice a Kubernetes:
+# "quiero N réplicas de este contenedor corriendo siempre".
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: healthy-app
+  namespace: demo
+  labels:
+    app: healthy-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: healthy-app
+  template:
+    metadata:
+      labels:
+        app: healthy-app
+    spec:
+      containers:
+        - name: web
+          image: nginx:1.27
+          ports:
+            - containerPort: 80
+---
+# Un Service da una IP/DNS estable dentro del cluster para
+# acceder a los pods del Deployment.
+apiVersion: v1
+kind: Service
+metadata:
+  name: healthy-app
+  namespace: demo
+spec:
+  selector:
+    app: healthy-app
+  ports:
+    - port: 80
+      targetPort: 80
