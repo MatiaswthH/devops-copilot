@@ -286,7 +286,7 @@ mcp/
 
 ## 8. Roadmap de implementación
 
-- [ ] **Fase 1 — Infraestructura**: cluster kind + ArgoCD + apps de ejemplo
+- [x] **Fase 1 — Infraestructura**: cluster kind + ArgoCD + apps de ejemplo
       (una sana, una rota con fallos típicos: env var faltante, OOM,
       ImagePullBackOff).
 - [ ] **Fase 2 — Servidor MCP**: herramientas `get_argocd_app_status`,

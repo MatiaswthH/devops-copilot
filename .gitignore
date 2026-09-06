@@ -1,0 +1,6 @@
+/.venv
+/.vscode
+/tools
+
+/*.pyc
+__pycache__/
