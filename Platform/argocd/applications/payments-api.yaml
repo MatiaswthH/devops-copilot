@@ -1,0 +1,25 @@
+# Application de ArgoCD para la "broken-app" (ver Platform/apps/broken-app):
+# se deja sincronizada a propósito -> queda en CrashLoopBackOff real, que es
+# el caso de prueba que el agente de diagnóstico debe poder explicar.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: payments-api
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/MatiaswthH/devops-copilot
+    targetRevision: main
+    path: Platform/apps/broken-app
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: demo
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

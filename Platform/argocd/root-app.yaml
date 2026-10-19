@@ -1,0 +1,28 @@
+# App of apps: el único Application que se aplica a mano, una vez
+# (ver Platform/argocd/install/README.md). A partir de aquí, agregar o
+# quitar una app es agregar o quitar un archivo en applications/ y hacer
+# push -- ArgoCD la crea o la borra solo.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root-app
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/MatiaswthH/devops-copilot
+    targetRevision: main
+    path: Platform/argocd/applications
+    directory:
+      recurse: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
