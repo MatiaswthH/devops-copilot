@@ -2,7 +2,9 @@
 
 from types import SimpleNamespace
 
-from src.tools.pods import get_pods
+import pytest
+
+from src.tools.pods import get_pod_logs, get_pods
 
 
 def _fake_pod(name, waiting_reason=None, terminated_reason=None, restarts=0, ready=True):
@@ -62,3 +64,32 @@ def test_get_pods_healthy_pod():
 
     assert result[0]["ready"] == "1/1"
     assert result[0]["restarts"] == 0
+
+
+class _FakeCoreV1Logs:
+    def __init__(self, raw_logs: bytes):
+        self._raw_logs = raw_logs
+
+    def read_namespaced_pod_log(self, name, namespace, tail_lines, _preload_content):
+        return SimpleNamespace(data=self._raw_logs)
+
+
+def test_get_pod_logs_decodes_bytes_and_echoes_params():
+    fake = _FakeCoreV1Logs(b"FATAL: DB_HOST is not defined. Cannot connect to database.\n")
+
+    result = get_pod_logs(fake, pod_name="payments-api-abc", namespace="demo", tail_lines=50)
+
+    assert result == {
+        "pod_name": "payments-api-abc",
+        "namespace": "demo",
+        "tail_lines": 50,
+        "logs": "FATAL: DB_HOST is not defined. Cannot connect to database.\n",
+    }
+
+
+@pytest.mark.parametrize("tail_lines", [0, 501, -1])
+def test_get_pod_logs_rejects_tail_lines_out_of_range(tail_lines):
+    fake = _FakeCoreV1Logs(b"")
+
+    with pytest.raises(ValueError):
+        get_pod_logs(fake, pod_name="any-pod", tail_lines=tail_lines)

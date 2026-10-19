@@ -289,7 +289,7 @@ mcp/
 - [x] **Fase 1 — Infraestructura**: cluster kind + ArgoCD + apps de ejemplo
       (una sana, una rota con fallos típicos: env var faltante, OOM,
       ImagePullBackOff).
-- [ ] **Fase 2 — Servidor MCP**: herramientas `get_argocd_app_status`,
+- [x] **Fase 2 — Servidor MCP**: herramientas `get_argocd_app_status`,
       `get_pods`, `get_pod_logs`, `get_k8s_events`, probadas contra el cluster.
 - [ ] **Fase 3 — Agente básico**: LangGraph + Ollama consumiendo el servidor
       MCP; primer diagnóstico end-to-end.
